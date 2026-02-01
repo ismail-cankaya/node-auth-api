@@ -1,8 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
-
 const db = require('./config/db');
+require('dotenv').config();
 
 const app = express();
 
@@ -15,19 +14,25 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Node.js Auth API');
 });
 
-// Veritabanı Bağlantı Testi
-const testDbConnection = async () => {
+// Veritabanı Hazır Olana Kadar Deneyen Fonksiyon
+const initializeDatabase = async () => {
     try {
+        // Pool üzerinden basit bir sorgu ile testi yap
         const [rows] = await db.execute('SELECT 1 + 1 AS result');
         console.log(`✅ MySQL Bağlantısı Başarılı! Test Sonucu: ${rows[0].result}`);
     } catch (error) {
-        console.error('❌ Veritabanı Bağlantı Hatası:', error.message);
+        console.error('❌ Veritabanı henüz hazır değil, 5 saniye sonra tekrar denenecek...');
+        // 5 saniye bekle ve özyinelemeli (recursive) olarak tekrar dene
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        return initializeDatabase(); 
     }
 };
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`🚀 Sunucu çalışıyor: http://localhost:${PORT}`);
-    testDbConnection();
+// ÖNCE veritabanını bekle, SONRA sunucuyu başlat
+initializeDatabase().then(() => {
+    app.listen(PORT, () => {
+        console.log(`🚀 Sunucu çalışıyor: http://localhost:${PORT}`);
+    });
 });
