@@ -1,8 +1,14 @@
+version: '3.8'
+
 services:
   db:
     image: mysql:8.0
     container_name: auth_db_container
-    env_file: .env # Bilgileri direkt .env dosyasından çek dedik
+    restart: always
+    # .env dosyasındaki MYSQL_ROOT_PASSWORD gibi değişkenleri buraya eşliyoruz
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3306:3306"
     volumes:
@@ -11,9 +17,12 @@ services:
   api:
     build: .
     container_name: auth_api_container
+    restart: always
     ports:
       - "3000:3000"
-    env_file: .env # Bilgileri direkt .env dosyasından çek dedik
+    # .env dosyasını otomatik olarak bu konteynerin içine yükler
+    env_file:
+      - .env
     depends_on:
       - db
     volumes:
