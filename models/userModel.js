@@ -25,17 +25,25 @@ class User {
         return result;
     }
 
-    // Find a user by ID
-    static async findById(userId) {
-        const query = 'SELECT id, username, email, role, created_at FROM users WHERE id = ?';
-        const [rows] = await db.execute(query, [userId]);
+// 1. Çoklu Giriş Desteği: Email, TC No veya Telefon ile Kullanıcı Bulma
+    static async findByIdentifier(identifier) {
+        // SQL sorgusunda OR kullanarak üç sütunu da kontrol ediyoruz
+        const query = `
+            SELECT * FROM users 
+            WHERE email = ? OR tc_no = ? OR phone = ?
+        `;
+        
+        // Sorgudaki üç soru işaretine de aynı 'identifier' değerini gönderiyoruz
+        const [rows] = await db.execute(query, [identifier, identifier, identifier]);
+        
+        // Eşleşen kullanıcı varsa ilk kaydı döner
         return rows[0];
     }
 
-    // Find a user by email
-    static async findByEmail(email) {
-        const query = 'SELECT id, username, email, password, role, created_at FROM users WHERE email = ?';
-        const [rows] = await db.execute(query, [email]);
+    // 2. ID ile Bulma (Kullanıcı giriş yaptıktan sonra profil bilgileri için gereklidir)
+    static async findById(userId) {
+        const query = 'SELECT id, username, email, first_name, last_name, role, created_at FROM users WHERE id = ?';
+        const [rows] = await db.execute(query, [userId]);
         return rows[0];
     }
 }
