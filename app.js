@@ -40,6 +40,28 @@ const initializeDatabase = async () => {
         // Pool üzerinden basit bir sorgu ile testi yap
         const [rows] = await db.execute('SELECT 1 + 1 AS result');
         console.log(`✅ MySQL Bağlantısı Başarılı! Test Sonucu: ${rows[0].result}`);
+
+        // 2. Tabloyu Otomatik Oluştur (Eğer yoksa)
+        const createTableQuery = `
+            CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                username VARCHAR(50) NOT NULL,
+                email VARCHAR(100) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                first_name VARCHAR(50),
+                last_name VARCHAR(50),
+                tc_no VARCHAR(11) UNIQUE,
+                phone VARCHAR(15),
+                birth_date DATE,
+                gender ENUM('male', 'female', 'other'),
+                role VARCHAR(20) DEFAULT 'user',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+        `;
+        
+        await db.execute(createTableQuery);
+        console.log('✅ Users tablosu hazır!');
+        
     } catch (error) {
         console.error('❌ Veritabanı henüz hazır değil, 5 saniye sonra tekrar denenecek...');
         // 5 saniye bekle ve özyinelemeli (recursive) olarak tekrar dene

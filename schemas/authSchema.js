@@ -3,7 +3,7 @@ const Joi = require('joi');
 const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 const registerSchema = Joi.object({
-    username: Joi.string().alphanum().min(3).max(30).required().messages({
+    username: Joi.string().min(3).max(30).pattern(/^[a-zA-Z0-9._-]+$/).required().messages({
         'string.min': 'Kullanıcı adı en az 3 karakter olmalıdır.',
         'string.max': 'Kullanıcı adı en fazla 30 karakter olabilir.',
         'any.required': 'Kullanıcı adı gereklidir.'
