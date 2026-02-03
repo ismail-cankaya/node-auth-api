@@ -1,5 +1,5 @@
 const User = require('../models/userModel');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { registerSchema, loginSchema } = require('../schemas/authSchema');
 
@@ -15,26 +15,29 @@ exports.register = async (req, res) => {
             });
         }
 
-        const { username, email, password } = req.body;
+        const { username, email, password, first_name, last_name, tc_no, phone, birth_date, gender } = req.body;
 
         // Check if user already exists
-        const existingUser = await User.findByEmail(email);
+        const existingUser = await User.findByIdentifier(email); // Veya tc_no/phone kontrolü de eklenebilir
         if (existingUser) {
-            return res.status(409).json({ 
-                success: false,
-                message: 'Bu e-posta adresi zaten kayıtlı.' 
-            });
+            return res.status(409).json({ success: false, message: 'Bu kullanıcı bilgileriyle zaten bir kayıt mevcut.' });
         }
 
         // Hash password
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create new user
         const newUser = await User.create({
             username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            first_name,
+            last_name,
+            tc_no,
+            phone,
+            birth_date,
+            gender
         });
 
         res.status(201).json({
@@ -88,7 +91,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign(
             { userId: user.id, role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
         );
 
         res.json({
