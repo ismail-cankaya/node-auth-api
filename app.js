@@ -3,15 +3,35 @@ const cors = require('cors');
 const db = require('./config/db');
 require('dotenv').config();
 
+const authRoutes = require('./routes/authRoutes');
+
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors()); //Cors: Her kaynaktan gelen isteklere izin ver (Angular, React vb. frontend uygulamaları için)
 app.use(express.json());
+app.use('/api/auth', authRoutes); // Auth routes
+app.use(express.urlencoded({ extended: true })); // URL-encoded verileri işleme
 
-// Basit bir test rotası
+
+// Routes
 app.get('/', (req, res) => {
   res.send('Welcome to the Node.js Auth API');
+});
+
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Sayfa bulunamadı.'
+    });
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({
+        success: false,
+        message: 'Sunucu hatası. Lütfen daha sonra tekrar deneyiniz.'
+    });
 });
 
 // Veritabanı Hazır Olana Kadar Deneyen Fonksiyon
