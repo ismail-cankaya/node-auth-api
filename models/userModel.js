@@ -2,10 +2,26 @@ const db = require('../config/db');
 
 class User {
     // Create a new user
-    static async create(UserData) {
-        const { username, email, password } = UserData;
-        const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-        const [result] = await db.execute(query, [username, email, password]);
+    static async create(userData) {
+        const { 
+            username, 
+            email, 
+            password, 
+            first_name = null, 
+            last_name = null, 
+            tc_no = null, 
+            phone = null,
+            birth_date = null, 
+            gender = null 
+        } = userData;
+    
+        const query = `INSERT INTO users 
+            (username, email, password, first_name, last_name, tc_no, phone, birth_date, gender) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            
+        const [result] = await db.execute(query, [
+            username, email, password, first_name, last_name, tc_no, phone, birth_date, gender
+        ]);
         return result;
     }
 
