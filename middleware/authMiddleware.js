@@ -1,7 +1,10 @@
 const jtw = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
+    // 1. Gelen isteğin başlıklarından 'authorization' etiketli olanı çek.
     const authHeader = req.headers['authorization'];
+    // 2. Eğer başlık varsa ("&&" kontrolü), metni boşluktan böl.
+    // ["Bearer", "eyJhbGci..."] dizisinin 1. indeksini alıp 'token' değişkenine aktar.
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
