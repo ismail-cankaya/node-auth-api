@@ -46,6 +46,19 @@ class User {
         const [rows] = await db.execute(query, [userId]);
         return rows[0];
     }
+
+    static async getAll() {
+        const query = 'SELECT id, username, email, first_name, last_name, role, created_at FROM users';
+        const [rows] = await db.execute(query);
+        return rows;
+    }
+
+    static async deleteById(userId) {
+        const query = 'DELETE FROM users WHERE id = ?';
+        const [result] = await db.execute(query, [userId]);
+        return result.affectedRows > 0; // Silme işlemi başarılıysa true döner
+    }
 }
+
 
 module.exports = User;
