@@ -10,12 +10,11 @@ router.post('/login', authController.login);
 
 const verifyToken = require('../middleware/authMiddleware');
 
-// Korumalı Rota: Kullanıcı kendi bilgilerini görebilir
 router.get('/me', verifyToken, (req, res) => {
     res.json({
         success: true,
         message: "Gizli bölgeye hoş geldin!",
-        user: req.user // Token içinden çözülen ID ve Role bilgisi
+        user: req.user 
     });
 });
 

@@ -18,7 +18,7 @@ exports.register = async (req, res) => {
         const { username, email, password, first_name, last_name, tc_no, phone, birth_date, gender } = req.body;
 
         // Check if user already exists
-        const existingUser = await User.findByIdentifier(email); // Veya tc_no/phone kontrolü de eklenebilir
+        const existingUser = await User.findByIdentifier(email); 
         if (existingUser) {
             return res.status(409).json({ success: false, message: 'Bu kullanıcı bilgileriyle zaten bir kayıt mevcut.' });
         }
