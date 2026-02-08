@@ -4,6 +4,7 @@ const db = require('./config/db');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
@@ -11,6 +12,7 @@ const app = express();
 app.use(cors()); //Cors: Her kaynaktan gelen isteklere izin ver (Angular, React vb. frontend uygulamaları için)
 app.use(express.json());
 app.use('/api/auth', authRoutes); // Auth routes
+app.use('/api/users', userRoutes); // User routes
 app.use(express.urlencoded({ extended: true })); // URL-encoded verileri işleme
 
 
