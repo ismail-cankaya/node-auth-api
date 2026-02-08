@@ -7,18 +7,19 @@ const { registerSchema, loginSchema } = require('../schemas/authSchema');
 exports.register = async (req, res) => {
     try {
         // Validate request body
-        const { error } = registerSchema.validate(req.body);
+        const { error, value } = registerSchema.validate(req.body);
         if (error) {
             return res.status(400).json({ 
                 success: false,
-                message: error.details[0].message 
+                message: error.details[0].message  
             });
         }
 
-        const { username, email, password, first_name, last_name, tc_no, phone, birth_date, gender } = req.body;
+        const { username, email, password, first_name, last_name, tc_no, phone, birth_date, gender } = value;
+
 
         // Check if user already exists
-        const existingUser = await User.findByIdentifier(email); 
+        const existingUser = await User.findByIdentifier(email) || await User.findByIdentifier(tc_no) || await User.findByIdentifier(phone); 
         if (existingUser) {
             return res.status(409).json({ success: false, message: 'Bu kullanıcı bilgileriyle zaten bir kayıt mevcut.' });
         }
