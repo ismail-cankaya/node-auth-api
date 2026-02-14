@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 require('dotenv').config();
 
-// Bağlantı Havuzu (Pool) - Performans için en iyisi
+// Bağlantı Havuzu (Pool)
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
