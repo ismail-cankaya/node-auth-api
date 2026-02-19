@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&+]{8,}$/;
 
 const registerSchema = Joi.object({
     username: Joi.string().min(3).max(30).pattern(/^[a-zA-Z0-9._-]+$/).required().messages({
