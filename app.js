@@ -8,15 +8,19 @@ const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 
+// Nginx IP'si yerine gerçek kullanıcı IP'sini (X-Real-IP) almamızı sağlar.
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(cors()); //Cors: Her kaynaktan gelen isteklere izin ver (Angular, React vb. frontend uygulamaları için)
 app.use(express.json());
-app.use('/api/auth', authRoutes); // Auth routes
-app.use('/api/users', userRoutes); // User routes
 app.use(express.urlencoded({ extended: true })); // URL-encoded verileri işleme
 
 
 // Routes
+app.use('/api/auth', authRoutes); // Auth routes
+app.use('/api/users', userRoutes); // User routes
+
 app.get('/', (req, res) => {
   res.send('Welcome to the Node.js Auth API');
 });
@@ -56,6 +60,7 @@ const PORT = process.env.PORT || 3000;
 // ÖNCE veritabanını bekle, SONRA sunucuyu başlat
 initializeDatabase().then(() => {
     app.listen(PORT, () => {
-        console.log(`🚀 Sunucu çalışıyor: http://localhost:${PORT}`);
+        console.log(`🚀 API İçeride ${PORT} portunda çalışıyor.`);
+        console.log(`🌐 Dışarıdan Nginx Gateway üzerinden erişiliyor.`);
     });
 });
