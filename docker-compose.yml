@@ -20,8 +20,6 @@ services:
     build: .
     container_name: auth_api_container
     restart: always
-    ports:
-      - "3000:3000"
     # .env dosyasını otomatik olarak bu konteynerin içine yükler
     env_file:
       - .env
