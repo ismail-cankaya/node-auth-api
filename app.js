@@ -59,7 +59,7 @@ const PORT = process.env.PORT || 3000;
 
 // ÖNCE veritabanını bekle, SONRA sunucuyu başlat
 initializeDatabase().then(() => {
-    app.listen(PORT, () => {
+    app.listen(PORT, '0.0.0.0', () => {
         console.log(`🚀 API İçeride ${PORT} portunda çalışıyor.`);
         console.log(`🌐 Dışarıdan Nginx Gateway üzerinden erişiliyor.`);
     });
