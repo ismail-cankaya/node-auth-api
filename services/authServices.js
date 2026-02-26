@@ -53,10 +53,7 @@ exports.login = async (req, res) => {
     // Validate request body
     const { error } = loginSchema.validate(req.body);
     if (error) {
-        return res.status(400).json({
-            success: false,
-            message: error.details[0].message
-        });
+        
     }
     const { identifier, password } = req.body;
 
