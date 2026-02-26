@@ -3,16 +3,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { registerSchema, loginSchema } = require('../schemas/authSchema');
 
+const AppError = require('../utils/AppError');
+const ERROR_CODES = require('../utils/errorCodes');
+
+
 // Register a new user
 exports.register = async (req, res) => {
 
     // Validate request body
     const { error, value } = registerSchema.validate(req.body);
     if (error) {
-        return res.status(400).json({
-            success: false,
-            message: error.details[0].message
-        });
+        throw new AppError(ERROR_CODES.REQUEST.VALIDATION_ERROR, 400);
     }
 
     // Extract validated values
@@ -24,7 +25,7 @@ exports.register = async (req, res) => {
         await userModel.findByIdentifier(phone);
 
     if (exitingUser) {
-        return res.status(409).json({ success: false, message: 'Bu kullanıcı bilgileriyle zaten bir kayıt mevcut.' });
+        throw new AppError(ERROR_CODES.USER.ALREADY_EXISTS, 409);
     }
 
     // Hash password
@@ -53,26 +54,20 @@ exports.login = async (req, res) => {
     // Validate request body
     const { error } = loginSchema.validate(req.body);
     if (error) {
-        
+        throw new AppError(ERROR_CODES.REQUEST.VALIDATION_ERROR, 400);
     }
     const { identifier, password } = req.body;
 
     // Find user by identifier (email, tc_no, or phone)
     const user = await User.findByIdentifier(identifier);
     if (!user) {
-        return res.status(401).json({
-            success: false,
-            message: 'Geçersiz kimlik bilgileri.'
-        });
+        throw new AppError(ERROR_CODES.USER.NOT_FOUND, 404);
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        return res.status(401).json({
-            success: false,
-            message: 'Geçersiz kimlik bilgileri.'
-        });
+        throw new AppError(ERROR_CODES.AUTH.INVALID_CREDENTIALS, 401);
     }
 
     // Generate JWT
@@ -88,5 +83,4 @@ exports.login = async (req, res) => {
     });
 
     return token;
-
 }
