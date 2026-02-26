@@ -8,10 +8,10 @@ const ERROR_CODES = require('../utils/errorCodes');
 
 
 // Register a new user
-exports.register = async (req, res) => {
+exports.register = async (userData) => {
 
     // Validate request body
-    const { error, value } = registerSchema.validate(req.body);
+    const { error, value } = registerSchema.validate(userData);
     if (error) {
         throw new AppError(ERROR_CODES.REQUEST.VALIDATION_ERROR, 400);
     }
@@ -50,16 +50,16 @@ exports.register = async (req, res) => {
 
 // Login user
 
-exports.login = async (req, res) => {
+exports.login = async (loginData) => {
     // Validate request body
-    const { error } = loginSchema.validate(req.body);
+    const { error, value } = loginSchema.validate(loginData);
     if (error) {
         throw new AppError(ERROR_CODES.REQUEST.VALIDATION_ERROR, 400);
     }
-    const { identifier, password } = req.body;
+    const { identifier, password } = value;
 
     // Find user by identifier (email, tc_no, or phone)
-    const user = await User.findByIdentifier(identifier);
+    const user = await userModel.findByIdentifier(identifier);
     if (!user) {
         throw new AppError(ERROR_CODES.USER.NOT_FOUND, 404);
     }
@@ -76,11 +76,6 @@ exports.login = async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
     );
-
-    res.json({
-        success: true,
-        token
-    });
-
+    
     return token;
 }
