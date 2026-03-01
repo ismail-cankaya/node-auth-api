@@ -30,7 +30,7 @@ services:
       - "9229:9229"
     # EKLENEN KISIM 2: Node.js'i debug modunda başlatıyoruz. 
     # Not: Eğer ana dosyan index.js değilse (örneğin app.js veya server.js ise) aşağıyı ona göre değiştir.
-    command: node --inspect=0.0.0.0:9229 index.js
+    command: node --inspect-brk=0.0.0.0:9229 app.js
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
