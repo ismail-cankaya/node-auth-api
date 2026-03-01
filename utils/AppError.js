@@ -1,7 +1,7 @@
 class AppError extends Error {
-    constructor(message, statuscode, errorCode) {
+    constructor(message, statusCode, errorCode) {
         super(message);
-        this.statuscode = statuscode;
+        this.statusCode = statusCode;
         this.errorCode = errorCode;
         this.isOperational = true; // Bu, beklenen ve yönetilebilir bir hata olduğunu belirtir
         Error.captureStackTrace(this, this.constructor);
