@@ -60,13 +60,8 @@ exports.login = async (loginData) => {
 
     // Find user by identifier (email, tc_no, or phone)
     const user = await userModel.findByIdentifier(identifier);
-    if (!user) {
-        throw new AppError(ERROR_CODES.USER.NOT_FOUND, 404);
-    }
 
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    if (!user || !await bcrypt.compare(password, user.password)){
         throw new AppError(ERROR_CODES.AUTH.INVALID_CREDENTIALS, 401);
     }
 
