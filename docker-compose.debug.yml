@@ -1,0 +1,8 @@
+# docker-compose.debug.yml
+version: '3.8'
+
+services:
+  api:
+    ports:
+      - "9229:9229" # Sadece debug yaparken bu portu dışarı aç
+    command: node --inspect-brk=0.0.0.0:9229 app.js # Sadece debug yaparken bu komutu çalıştır
