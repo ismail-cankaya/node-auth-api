@@ -3,6 +3,8 @@ const cors = require('cors');
 const db = require('./config/db');
 require('dotenv').config();
 
+const globalErrorHandler = require('./middleware/errorMiddleware');
+
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 
@@ -32,14 +34,6 @@ app.use((req, res) => {
     });
 });
 
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        success: false,
-        message: 'Sunucu hatası. Lütfen daha sonra tekrar deneyiniz.'
-    });
-});
-
 // Veritabanı Hazır Olana Kadar Deneyen Fonksiyon
 const initializeDatabase = async () => {
     try {
@@ -56,6 +50,8 @@ const initializeDatabase = async () => {
 };
 
 const PORT = process.env.PORT || 3000;
+
+app.use(globalErrorHandler); // Global error handling middleware
 
 // ÖNCE veritabanını bekle, SONRA sunucuyu başlat
 initializeDatabase().then(() => {
