@@ -1,15 +1,12 @@
 const authService = require('../services/authServices');
 const catchAsync = require('../utils/catchAsync');
+const { sendSuccess } = require('../utils/response');
 
 // Register a new user
 exports.register = catchAsync(async (req, res, next) => {
     const newUser = await authService.register(req.body);
 
-    res.status(201).json({
-        success: true,
-        message: 'Kullanıcı başarıyla oluşturuldu.',
-        user: newUser
-    });
+    return sendSuccess(res, 201, newUser);
 });
 
 // Login İşlemi
@@ -19,8 +16,5 @@ exports.login = catchAsync(async (req, res, next) => {
     const token = await authService.login(req.body);
 
     // 2. Başarılı cevabı müşteriye sunuyoruz.
-    res.status(200).json({
-        success: true,
-        token
-    });
+    return sendSuccess(res, 200, { token });
 });
