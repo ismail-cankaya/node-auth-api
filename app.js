@@ -28,9 +28,11 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Node.js Auth API');
 });
 
-app.all('*', (req, res, next) => {
+app.all('*splat', (req, res, next) => {
     next(new AppError('ROUTE_NOT_FOUND', 404)); 
 });
+
+app.use(globalErrorHandler); // Global error handling middleware
 
 // Veritabanı Hazır Olana Kadar Deneyen Fonksiyon
 const initializeDatabase = async () => {
@@ -48,8 +50,6 @@ const initializeDatabase = async () => {
 };
 
 const PORT = process.env.PORT || 3000;
-
-app.use(globalErrorHandler); // Global error handling middleware
 
 // ÖNCE veritabanını bekle, SONRA sunucuyu başlat
 initializeDatabase().then(() => {
