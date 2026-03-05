@@ -3,8 +3,9 @@ const cors = require('cors');
 const db = require('./config/db');
 require('dotenv').config();
 
+const AppError = require('./utils/AppError');
+const ERROR_CODES = require('./utils/errorCodes');
 const globalErrorHandler = require('./middleware/errorMiddleware');
-
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 
@@ -27,11 +28,8 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Node.js Auth API');
 });
 
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: 'Sayfa bulunamadı.'
-    });
+app.all('*', (req, res, next) => {
+    next(new AppError('ROUTE_NOT_FOUND', 404)); 
 });
 
 // Veritabanı Hazır Olana Kadar Deneyen Fonksiyon
