@@ -10,6 +10,8 @@ router.post('/login', authController.login);
 
 const verifyToken = require('../middleware/authMiddleware');
 
+
+// Bu kısıma gerek yok, sadece test amaçlı gizli bir rota ekledik. İstek atarken Authorization header
 router.get('/me', verifyToken, (req, res) => {
     res.json({
         success: true,
