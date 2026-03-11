@@ -6,6 +6,20 @@ const { registerSchema, loginSchema } = require('../schemas/authSchema');
 const AppError = require('../utils/AppError');
 const ERROR_CODES = require('../utils/errorCodes');
 
+const generateToken = (user) => {
+    const payload = {
+        userId: user.id,
+        email: user.email,
+        username: user.username
+    };
+
+    const assessToken = jwt.sign(payload, process.env.JWT_SECRET, 
+        { expiresIn: process.env.JWT_EXPIRES_IN});
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET,
+        { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN });
+
+    return { assessToken, refreshToken };
+}
 
 // Register a new user
 exports.register = async (userData) => {
