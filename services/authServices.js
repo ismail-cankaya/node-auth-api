@@ -79,12 +79,8 @@ exports.login = async (loginData) => {
         throw new AppError(ERROR_CODES.AUTH.INVALID_CREDENTIALS, 401);
     }
 
-    // Generate JWT
-    const token = jwt.sign(
-        { userId: user.id, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: process.env.JWT_EXPIRES_IN || '1h' }
-    );
+    // Generate tokens
+    const { assessToken, refreshToken } = generateToken(user);
     
-    return token;
+    return { assessToken, refreshToken };
 }
