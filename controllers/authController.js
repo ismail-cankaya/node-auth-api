@@ -11,10 +11,10 @@ exports.register = catchAsync(async (req, res, next) => {
 
 // Login İşlemi
 exports.login = catchAsync(async (req, res, next) => {
-    
-    // 1. İsteği mutfağa gönderip, dönen bileti (Token) teslim alıyoruz.
-    const token = await authService.login(req.body);
+
+    const {accessToken, refreshToken} = await authService.login(req.body);
 
     // 2. Başarılı cevabı müşteriye sunuyoruz.
-    return sendSuccess(res, 200, { token });
+    return sendSuccess(res, 200, 
+        { accessToken, refreshToken });
 });
